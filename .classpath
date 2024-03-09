@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="05-FirstStepsInJavaWithSpringBoot/rest-with-spring-boot-and-java-erudio/src/main/java"/>
-	<classpathentry kind="src" path="05-FirstStepsInJavaWithSpringBoot/rest-with-spring-boot-and-java-erudio/src/test/java"/>
-	<classpathentry kind="lib" path="05-FirstStepsInJavaWithSpringBoot/rest-with-spring-boot-and-java-erudio/.mvn/wrapper/maven-wrapper.jar"/>
-	<classpathentry kind="output" path="05-FirstStepsInJavaWithSpringBoot/rest-with-spring-boot-and-java-erudio/target/classes"/>
-</classpath>
