@@ -4,16 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Essa Classe apresentará a excessão customizada para ser retornada
+ * Essa Classe apresentará a excessão customizada para ser retornada.
+ * Implementa Serializable
  * 
  * @author Lucas Borguezam
  * @since 09 de Março de 2024
  */
 public class ExceptionsResponse implements Serializable{
 
-	/**
-	 * 
-	 */
+	//Necessário para atender o aviso por implementar Serializable
 	private static final long serialVersionUID = 1L;
 	
 	private Date timestamp;
