@@ -1,0 +1,27 @@
+# CONFIGURAÇÕES PARA CONECÇÃO COM BANCO DE DADOS
+spring:
+    datasource:
+        dbcp2:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: jdbc:mysql://localhost:3306/rest_with_spring_boot_erudio?useTimezone=true&serverTimezone=UTC
+            username: root
+#            password:
+
+    #jpA FAZ A TRADUÇÃO DE OBJ JAVA PARA SQL APROPRIADO PARA CADA BANCO (MYSQL)
+    jpa:
+        hibernate:
+            ddl-auto:  update
+                # EXISTE ALGUMAS CONFIGURAÇÕES, O IDEAL É QUE SE USE 'NONE', O OS DIFERENTES DE NONE NÃO SE DEVE USAR EM PRODUÇÃO
+                # NONE: JPA NÃO FAZ NADA NO SEWU BANDO
+                # VALIDADE: VALIDA O SCHEMA
+                # CREATE: PODE CRIAR E PODE DELETAR DADOS
+                # CREATE-DROP: O BANCO É CRIADO E DELETADO A CADA SEÇÃO
+                # UPDATE: ALTERA O QUE JA SE TEM
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
+            show-sql: false
+                #recomendado true apenas para debug, fora isso é desperdício de recursos da máquina
+
+
+#
