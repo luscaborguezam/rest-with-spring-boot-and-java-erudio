@@ -1,5 +1,7 @@
-# rest-with-spring-boot-and-java-
+# rest-with-spring-boot-and-java-erudio
 
 ~~~
-Projeto realiza a conexão com o banco de dados, pelo arquivo '.yml', utiliza anotations que apontam para a tabela, e operações CRUD.
+Este projeto foi criado para aprender a criar um end point utilizando spring boot e java
+
+O projeto dessa branch ensina como fazer end points com os métodos  HTTP GET,POST,PUT e DELETE 
 ~~~
