@@ -5,7 +5,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
+import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
+import br.com.erudio.repositories.PersonRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,10 +18,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PersonServices {
-	/**
-	 * counter: id mocado (Ficticio)
-	 */
-	private final AtomicLong counter = new AtomicLong();
 
 	/**
 	 * Objeto Logger, que é usado para registrar mensagens de log em uma aplicação Java.
@@ -27,6 +28,9 @@ public class PersonServices {
 	 */
 	private Logger  logger = Logger.getLogger(PersonServices.class.getName());
 
+	@Autowired
+	PersonRepository repository;
+	
 	/**
 	 * MÉTODO MOC
 	 * @return LIST PERSON MOKADO
@@ -34,38 +38,83 @@ public class PersonServices {
 	public List<Person> findAll(){
 		logger.info("Finding all people");
 
-		List<Person> persons  = new ArrayList<>();
-		for(int i = 0; i < 8; i++){
-			persons.add(mokedPerson(i));
-		}
-		return persons;
+		return repository.findAll();
 	}
 
 	/**
-	 * TODO: MÉTODO MOCADO
-	 * BUSCA PERSON PELO ID
-	 *
+	 * BUSCA PERSON NA BASE DE DADOS PELO ID UTILIZANDO REPOSITORY.
 	 * @param id
 	 * @return
 	 */
-	public Person findById(String id){
+	public Person findById(Long id){
 		logger.info("Finding one person!");
 
-		Person person = new Person();
-		person.setId(counter.incrementAndGet());
-		person.setFirstName("Lusca");
-		person.setLastName("Borguezam");
-		person.setAddress("R. JJ, 000, Bairro, Cidade, SP, Brasil");
-		person.setGender("Male");
-		return person;
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Not records found fir this ID"));
+				/*Quando não encontrar o ID, vai lançar com uma função lambida uma exceção de "Não encontrado"*/
 	}
 
+	/**
+	 * SALVA PERSON NA BASE DE DADOS UTILIZANDO REPOSITORY
+	 * @param person
+	 * @return
+	 */
+	public Person create(Person person){
+		logger.info("Creating one persons!");
+		
+		return repository.save(person);
+	}
+
+	/**
+	 * ALTERA PERSON NA BASE DE DADOS UTILIZANDO REPOSITORY
+	 * @param person
+	 * @return
+	 */
+	public Person update(Person person){
+		logger.info("Update one persons!");
+		
+		/*Para realizar o update, precisa dos dados anteriores*/
+		//Pode utilizar a classe person ou var
+		var entity = repository.findById(person.getId())
+		.orElseThrow(() -> new ResourceNotFoundException("Not records found fir this ID"));
+		
+		entity.setFirstName(person.getFirstName());
+		entity.setLastName(person.getLastName());
+		entity.setAddress(person.getAddress());
+		entity.setGender(person.getGender());
+		
+		
+		return repository.save(person);
+	}
+
+	/**
+	 * DELETA PERSON NA BASE DE DADOS UTILIZANDO REPOSITORY
+	 * @param id
+	 */
+	public void delete(Long id){
+		logger.info("Delete the persons "+id+"!");
+		
+		/*Ao rceber somente o id, não se sabe qual objeto se quer deletar, 
+		 * por isso é necessário recuperar o objeto para que o repository possa apagar
+		 */
+		var entity = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Not records found fir this ID"));
+		
+		repository.delete(entity);
+		
+	}
+	
+	
+	
+	
+	/*Códigos substituídos*/
 	/**
 	 * TODO: MOCADO
 	 * MÉTODO RETORNA OBJETO PERSON MOCADO
 	 * @param i
 	 * @return person -> OBJETO PERSON
 	 */
+	/*
 	private Person mokedPerson(int i) {
 		Person person = new Person();
 		person.setId(counter.incrementAndGet());
@@ -75,19 +124,7 @@ public class PersonServices {
 		person.setGender("Male");
 		return person;
 	}
-
-	public Person create(Person person){
-		logger.info("Creating one persons!");
-		return person;
-	}
-
-	public Person update(Person person){
-		logger.info("Update one persons!");
-		return person;
-	}
-
-	public void delete(String id){
-		logger.info("Delete the persons "+id+"!");
-
-	}
+	*/
+	
+	
 }

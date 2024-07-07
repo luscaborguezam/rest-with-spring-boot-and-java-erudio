@@ -6,14 +6,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /*
  * @ResponseStatus define o código do status http que ele vai retornar
  */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UnsupportedMathOperationException extends RuntimeException{
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException{
 	
-	public UnsupportedMathOperationException(String ex) {
+	private static final long serialVersionUID = 1L;
+
+	public ResourceNotFoundException(String ex) {
 		//Retorna uma menssagem de erro
 		super(ex);
 	}
 	
-	private static final long serialVersionUID = 1L;
 
 }
