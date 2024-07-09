@@ -3,6 +3,7 @@ package br.com.erudio.controllers;
 import br.com.erudio.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.erudio.services.PersonServices;
@@ -32,7 +33,7 @@ public class PersonControler {
 	 * Retornar uma lista de objetos
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Person> findAll(){
 		return service.findAll();
 	}
@@ -44,7 +45,7 @@ public class PersonControler {
 	 * @return OBJETO PERSON EM JSON
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{id}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Person findByid(@PathVariable(value = "id") Long id) throws Exception {
 		
 		return service.findById(id);
@@ -57,8 +58,7 @@ public class PersonControler {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(
-			method=RequestMethod.POST,
+	@PostMapping(
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Person create(@RequestBody Person person) throws Exception {
@@ -72,8 +72,7 @@ public class PersonControler {
 	 * @return person -> dados alterados
 	 * @throws Exception
 	 */
-	@RequestMapping(
-			method=RequestMethod.PUT,
+	@PutMapping(
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Person update(@RequestBody Person person) throws Exception {
@@ -86,9 +85,14 @@ public class PersonControler {
 	 * @param id
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{id}", method=RequestMethod.DELETE)
-	public void update(@PathVariable( value = "id") Long id) throws Exception {
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<?> update(@PathVariable( value = "id") Long id) throws Exception {
 		service.delete(id);
+		
+		/*O seu retorno está com status code 200, mas deve retornar 204_NO_CONTENT 
+		 *quando deletar o registro, para isso:
+		 */
+		return ResponseEntity.noContent().build();
 	}
 	
 }//PersonControler{}

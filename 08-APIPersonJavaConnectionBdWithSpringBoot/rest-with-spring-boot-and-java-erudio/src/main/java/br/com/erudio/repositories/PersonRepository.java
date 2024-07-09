@@ -8,7 +8,6 @@ import br.com.erudio.model.Person;
 /**
  * Interface disponibiliza o CRUD para Person pelo JpaRepository.
  */
-@Repository
 public interface PersonRepository extends JpaRepository<Person, Long>{
 	
 
