@@ -39,7 +39,6 @@ public class PersonControler {
 	}
 
 	/**
-	 * TODO: MOCADO
 	 * MÉTODO QUE PROCURA NA BASE DADOS DE UMA PERSON PELO SEU ID POR MEIO DO GET HTTP
 	 * @param id
 	 * @return OBJETO PERSON EM JSON
@@ -52,7 +51,6 @@ public class PersonControler {
 	}//sum()
 
 	/**
-	 * TODO: MOCADO
 	 * MÉTODO CRIA UM PERSON NA BASE POR MEIO DO POST HTTP
 	 * @param person
 	 * @return
@@ -66,7 +64,6 @@ public class PersonControler {
 	}//sum()
 
 	/**
-	 * TODO: MOCADO
 	 * MÉTODO ALTERA UM PERSON NA BASE POR MEIO DO PUT HTTP
 	 * @param person
 	 * @return person -> dados alterados
