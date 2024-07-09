@@ -1,7 +1,7 @@
 # rest-with-spring-boot-and-java-erudio
 
 ~~~
-Este projeto foi criado para aprender a criar um end point utilizando spring boot e java
+Este projeto foi criado para aprender e aplicar o padrão de projeto Value Objetct utilizando spring boot e java
 
-O projeto dessa branch ensina como fazer end points com os métodos  HTTP GET,POST,PUT e DELETE 
+O projeto dessa branch já está a API com CRUD funcionando
 ~~~
