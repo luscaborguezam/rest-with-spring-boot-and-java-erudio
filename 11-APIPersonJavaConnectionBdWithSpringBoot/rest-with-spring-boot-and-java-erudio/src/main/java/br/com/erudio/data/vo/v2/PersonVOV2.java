@@ -4,15 +4,26 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+/*Anotation organiza a ordem dos atributos no json feito do objeto dessa classe*/
+@JsonPropertyOrder({"id", "address", "fistname", "lastName", "gender"})
 public class PersonVOV2 implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	/*Anotation define como o atributo se chama no json feito do objeto dessa classe*/
+	@JsonProperty("first_name")
 	private String firstName;
+	@JsonProperty("last_name")
 	private String lastName;
 	private String address;
 	private String gender;
+	/*Anotation ignora o atributo no json feito do objeto dessa classe*/
+	@JsonIgnore
 	private Date birthDay;
 	
 	public PersonVOV2() {}
