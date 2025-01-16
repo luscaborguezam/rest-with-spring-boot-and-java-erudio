@@ -34,6 +34,22 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.28</version>
 		</dependency>
+		
+		
+		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+		<dependency>
+		    <groupId>org.flywaydb</groupId>
+		    <artifactId>flyway-core</artifactId>
+		    <version>11.1.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql -->
+		<dependency>
+		    <groupId>org.flywaydb</groupId>
+		    <artifactId>flyway-mysql</artifactId>
+		    <version>11.1.1</version>
+		</dependency>
+
+		
 		<dependency>
 			<groupId>com.github.dozermapper</groupId>
 			<artifactId>dozer-core</artifactId>
@@ -62,6 +78,7 @@
 		
 	<!-- OUTRAS DEPÊNDENCIAS -->
 	
+	
 	<!-- TESTS DEPÊNDENCIAS -->	
 	
 	</dependencies>
@@ -73,6 +90,33 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!-- PLUGIN FLAYWAY PARA EXECUTAR MIGRATION SEM IDE-->	
+			<plugin>
+				    <groupId>org.flywaydb</groupId>
+				    <artifactId>flyway-maven-plugin</artifactId>
+				    <version>11.1.1</version>
+				<configuration>
+					<url>jdbc:mysql://localhost:3306/rest_with_spring_boot_erudio?useTimezone=true&amp;serverTimezone=UTC&amp;useSSL=false</url>
+					<user>root</user>
+					<password>root</password>
+				</configuration>
+				<!-- ADICIONADO DEPENDENCIA PORQUE O PLUGIN VAI IGNORAR AS DEPENDENCIAS CONFIGURADAS ACIMA E CONSIDERAR ESTA-->	
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>8.0.28</version>
+						<!-- USADO PARA EVITAR PROBLEMAS DE DUPLICIDADE COM SLF4J PORQUE O SPRING BOOT UTILIZA A MESMA VERSÃO, OU SEJA, VAI SUBIR DUAS VERSÕES COM NOMES IGUAIS NO CLASS PATH E SERÁ CONSIDERADA A PRIMEIRA E UMA DAS DUAS TECNOLOGIAS NÃO IRÁ SE COMPORTAR COMO ESPERADO-->
+						<exclusions>
+							<exclusion>
+								<groupId>org.slf4j</groupId>
+								<artifactId>slf4j-api</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+				</dependencies>
+			</plugin>
+		
 		</plugins>
 	</build>
 	<!-- REPOSITÓRIOS USADOS PARA BAIXAR AS DEPENDÊNCIAS -->
