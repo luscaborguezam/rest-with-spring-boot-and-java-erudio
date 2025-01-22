@@ -76,6 +76,13 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.dataformat</groupId>
+		    <artifactId>jackson-dataformat-xml</artifactId>
+		    <version>2.16.1</version>
+		</dependency>
+		
 	<!-- OUTRAS DEPÊNDENCIAS -->
 	
 	
@@ -86,12 +93,12 @@
 	<!-- COMPILAÇÃO COMO SERÁ A COMPILAÇÃO -->
 	<build>
 		<plugins>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- PLUGIN FLAYWAY PARA EXECUTAR MIGRATION SEM IDE-->	
-			<plugin>
+			//PLUGIN FLAYWAY PARA EXECUTAR MIGRATION SEM IDE-->	
+<!--			<plugin>
 				    <groupId>org.flywaydb</groupId>
 				    <artifactId>flyway-maven-plugin</artifactId>
 				    <version>11.1.1</version>
@@ -100,13 +107,13 @@
 					<user>root</user>
 					<password>root</password>
 				</configuration>
-				<!-- ADICIONADO DEPENDENCIA PORQUE O PLUGIN VAI IGNORAR AS DEPENDENCIAS CONFIGURADAS ACIMA E CONSIDERAR ESTA-->	
+				// ADICIONADO DEPENDENCIA PORQUE O PLUGIN VAI IGNORAR AS DEPENDENCIAS CONFIGURADAS ACIMA E CONSIDERAR ESTA
 				<dependencies>
 					<dependency>
 						<groupId>mysql</groupId>
 						<artifactId>mysql-connector-java</artifactId>
 						<version>8.0.28</version>
-						<!-- USADO PARA EVITAR PROBLEMAS DE DUPLICIDADE COM SLF4J PORQUE O SPRING BOOT UTILIZA A MESMA VERSÃO, OU SEJA, VAI SUBIR DUAS VERSÕES COM NOMES IGUAIS NO CLASS PATH E SERÁ CONSIDERADA A PRIMEIRA E UMA DAS DUAS TECNOLOGIAS NÃO IRÁ SE COMPORTAR COMO ESPERADO-->
+						//USADO PARA EVITAR PROBLEMAS DE DUPLICIDADE COM SLF4J PORQUE O SPRING BOOT UTILIZA A MESMA VERSÃO, OU SEJA, VAI SUBIR DUAS VERSÕES COM NOMES IGUAIS NO CLASS PATH E SERÁ CONSIDERADA A PRIMEIRA E UMA DAS DUAS TECNOLOGIAS NÃO IRÁ SE COMPORTAR COMO ESPERADO
 						<exclusions>
 							<exclusion>
 								<groupId>org.slf4j</groupId>
@@ -116,7 +123,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-		
+-->		
 		</plugins>
 	</build>
 	<!-- REPOSITÓRIOS USADOS PARA BAIXAR AS DEPENDÊNCIAS -->
