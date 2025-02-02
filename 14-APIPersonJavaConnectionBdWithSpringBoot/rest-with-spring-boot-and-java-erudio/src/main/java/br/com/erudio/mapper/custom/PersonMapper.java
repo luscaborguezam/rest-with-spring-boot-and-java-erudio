@@ -19,9 +19,9 @@ public class PersonMapper {
 	 * @param person
 	 * @return
 	 */
-	public PersonVOV2 convertEntityToVo(Person person) {
+	public PersonVOV2 convertEntityToVoV2(Person person) {
 		PersonVOV2 vo = new PersonVOV2();
-		vo.setId(person.getId());
+		vo.setKey(person.getId());
 		vo.setFirstName(person.getFirstName());
 		vo.setLastName(person.getLastName());
 		vo.setAddress(person.getAddress());
@@ -39,7 +39,7 @@ public class PersonMapper {
 	 */
 	public Person convertVoToEntity(PersonVOV2 person) {
 		Person entity = new Person();
-		entity.setId(person.getId());
+		entity.setId(person.getKey());
 		entity.setFirstName(person.getFirstName());
 		entity.setLastName(person.getLastName());
 		entity.setAddress(person.getAddress());
