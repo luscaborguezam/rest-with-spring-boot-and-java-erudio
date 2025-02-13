@@ -2,7 +2,10 @@ package br.com.erudio.unittests.mockito.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +18,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import br.com.erudio.controllers.PersonController;
 import br.com.erudio.data.vo.v1.PersonVO;
+import br.com.erudio.exceptions.RequiredObjectIsNullException;
+import br.com.erudio.mapper.DozerMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.repositories.PersonRepository;
 import br.com.erudio.services.PersonServices;
@@ -88,21 +94,70 @@ class PersonServicesTest {
 		
 	}
 
+	/* Verificar em posições específicas da lista de entidades, para garantir que tenham ids e os valores não sejam nulos
+	 * 1- Mockar Lista de objetos 
+	 * 2- Verificar se a lista é nula (Não deve ser)
+	 * 3- Verificar se o tamnho é igual ao que o método retorna
+	 * 4- Verificar objetos em posições aleatórias e fixas da lista 1,4,7
+	 */
 	@Test
 	void testFindAll() {
-		fail("Not yet implemented");
+		List<Person> list = input.mockEntityList(); 
+		
+		when(repository.findAll()).thenReturn(list);
+		
+		var peaple = service.findAll();
+		assertNotNull(peaple);
+		assertEquals(14, peaple.size());
+		
+	
+		var peapleOne = peaple.get(1);
+		/*Verificações*/
+		assertNotNull(peapleOne);
+		assertNotNull(peapleOne.getKey());
+		assertNotNull(peapleOne.getLinks());
+		assertTrue(peapleOne.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
+		//As strings esperada é definida em -> MockPerson.mockEntity()
+		assertEquals("Addres Test1", peapleOne.getAddress());
+		assertEquals("First Name Test1", peapleOne.getFirstName());
+		assertEquals("Last Name Test1", peapleOne.getLastName());
+		assertEquals("Female", peapleOne.getGender());
+		
+		var peapleFour = peaple.get(4);
+		/*Verificações*/
+		assertNotNull(peapleFour);
+		assertNotNull(peapleFour.getKey());
+		assertNotNull(peapleFour.getLinks());
+		assertTrue(peapleFour.toString().contains("links: [</person/v1/4>;rel=\"self\"]"));
+		//As strings esperada é definida em -> MockPerson.mockEntity()
+		assertEquals("Addres Test4", peapleFour.getAddress());
+		assertEquals("First Name Test4", peapleFour.getFirstName());
+		assertEquals("Last Name Test4", peapleFour.getLastName());
+		assertEquals("Male", peapleFour.getGender());
+		
+		var peapleSeven = peaple.get(7);
+		/*Verificações*/
+		assertNotNull(peapleSeven);
+		assertNotNull(peapleSeven.getKey());
+		assertNotNull(peapleSeven.getLinks());
+		assertTrue(peapleSeven.toString().contains("links: [</person/v1/7>;rel=\"self\"]"));
+		//As strings esperada é definida em -> MockPerson.mockEntity()
+		assertEquals("Addres Test7", peapleSeven.getAddress());
+		assertEquals("First Name Test7", peapleSeven.getFirstName());
+		assertEquals("Last Name Test7", peapleSeven.getLastName());
+		assertEquals("Female", peapleSeven.getGender());
 	}
 
 
+	/* Simular a persistencia do dado conforme o metodo create, 
+	 * o mock não cria o id, e o id só é criado após persistir o dado, faremos essa simulação
+	 * 1 - criar objeto com dados (Entidade antes de chamar o repositório)
+	 * 2 - Criar outro objeto que recebe o objeto mockado e adicionar o id. (Entidade após chamar o repositório)
+	 * 
+	 * Essa lógica é extraida do comportamento que o metodo da classe PersonService faz
+	 */
 	@Test
 	void testCreate() {
-		/* Simular a persistencia do dado conforme o metodo create, 
-		 * o mock não cria o id, e o id só é criado após persistir o dado, faremos essa simulação
-		 * 1 - criar objeto com dados (Entidade antes de chamar o repositório)
-		 * 2 - Criar outro objeto que recebe o objeto mockado e adicionar o id. (Entidade após chamar o repositório)
-		 * 
-		 * Essa lógica é extraida do comportamento que o metodo da classe PersonService faz
-		 */
 		Person entity = input.mockEntity(1); 
 		
 		Person persisted = entity;
@@ -128,14 +183,31 @@ class PersonServicesTest {
 		
 	}
 
+	/* Simular se o retorno da exceção ao tentar criar um usuário com o objeto nulo está retornando a menssagem esperada. 
+	 * 
+	 *  1- Objeto é null então é necessário criar a exceção ao rodar create(null)
+	 *  2- Validar se a menssagem atual contem a menssagem experada
+	 */
+	@Test
+	void createWithNullPerson() {
+		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
+			service.create(null);
+		});
+		
+		String expectedMessage = "Its not allowed to persist a null object!";
+		String actualMessage = exception.getMessage();
+		
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+	
+	/* Simular a persistencia do dados conforme o método update.
+	 * O método lida com uma entity já persistida, ou seja , játem o id
+	 * faremos essa simulação:
+	 * 1 - criar objeto com dados já persistidos
+	 * 2 - mock de findById, pois o método faz a busca.
+	 */
 	@Test
 	void testUpdate() {
-		/* Simular a persistencia do dados conforme o método update.
-		 * O método lida com uma entity já persistida, ou seja , játem o id
-		 * faremos essa simulação:
-		 * 1 - criar objeto com dados já persistidos
-		 * 2 - mock de findById, pois o método faz a busca.
-		 */
 		Person entity = input.mockEntity(1); 
 		
 		Person persisted = entity;
@@ -162,20 +234,37 @@ class PersonServicesTest {
 		assertEquals("Last Name Test1", result.getLastName());
 		assertEquals("Female", result.getGender());
 	}
+	
+	/* Simular se o retorno da exceção ao tentar criar um usuário com o objeto nulo está retornando a menssagem esperada. 
+	 * 
+	 *  1- Objeto é null então é necessário criar a exceção ao rodar create(null)
+	 *  2- Validar se a menssagem atual contem a menssagem experada
+	 */
+	@Test
+	void updateWithNullPerson() {
+		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
+			service.update(null);
+		});
+		
+		String expectedMessage = "Its not allowed to persist a null object!";
+		String actualMessage = exception.getMessage();
+		
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
 
 	/*
 	 * A validação de um delete só precisa ser feita se houver regras de negócios envolvida, 
 	 * pois o método é void
+	 *
+	 * Simular a deleção de dados conforme o método delete.
+	 * O método lida com uma entity já persistida, ou seja , já tem o id
+	 * faremos essa simulação:
+	 * 1 - criar objeto com dados já persistidos
+	 * 2 - mock de findById, pois o método faz a busca.
+	 * 3 - deleção
 	 */
 	@Test
 	void testDelete() {
-		/* Simular a deleção de dados conforme o método delete.
-		 * O método lida com uma entity já persistida, ou seja , já tem o id
-		 * faremos essa simulação:
-		 * 1 - criar objeto com dados já persistidos
-		 * 2 - mock de findById, pois o método faz a busca.
-		 * 3 - deleção
-		 */
 		Person entity = input.mockEntity(1); 
 		entity.setId(1L);
 		

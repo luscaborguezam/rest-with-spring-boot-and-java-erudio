@@ -12,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.erudio.exceptions.ExceptionsResponse;
+import br.com.erudio.exceptions.RequiredObjectIsNullException;
 import br.com.erudio.exceptions.ResourceNotFoundException;
 /**
  * Essa classe é um manipulador de exceções.
@@ -66,5 +67,19 @@ public class CustomizedResponseEntityExceptionHandler  extends ResponseEntityExc
 				request.getDescription(false));
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
+
 	
+	//Erro 400 no rest é o UnsupportedOperationException no java
+	@ExceptionHandler(RequiredObjectIsNullException.class)
+	public final ResponseEntity<ExceptionsResponse> handleBadRequestException(Exception ex, WebRequest request){
+		/**
+		 *  Este método trata exceções do tipo UnsupportedOperationException 
+		 *  e retorna uma resposta HTTP 400 (Bad Request).
+		 */
+		ExceptionsResponse exceptionResponse = new ExceptionsResponse(
+				new Date(), 
+				ex.getMessage(), 
+				request.getDescription(false));
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
 }//CustomizedResponseEntityExceptionHandler{}
