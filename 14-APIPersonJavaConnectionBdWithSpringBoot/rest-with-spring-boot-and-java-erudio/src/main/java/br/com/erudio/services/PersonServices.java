@@ -32,10 +32,8 @@ public class PersonServices {
 
 		logger.info("Finding all people!");
 
-		var persons =  DozerMapper.parseListObjects(repository.findAll(), PersonVO.class);
-		persons
-			.stream()
-			.forEach(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));	
+		var persons =  DozerMapper.parseListObjects(repository.findAll(), PersonVO.class);		
+		persons.forEach(this:: addHateoasLinks);	
 		return persons;
 		
 	}
@@ -47,7 +45,7 @@ public class PersonServices {
 		var entity = repository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		var vo = DozerMapper.parseObject(entity, PersonVO.class);
-		vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+		addHateoasLinks(vo);
 		return vo;
 	}
 	
@@ -58,7 +56,7 @@ public class PersonServices {
 		logger.info("Creating one person!");
 		var entity = DozerMapper.parseObject(person, Person.class);
 		var vo =  DozerMapper.parseObject(repository.save(entity), PersonVO.class);
-		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+		addHateoasLinks(vo);
 		return vo;
 	}
 	
@@ -66,7 +64,7 @@ public class PersonServices {
 		logger.info("Creating one person!");
 		var entity = mapper.convertVoToEntity(person);
 		var vo =  mapper.convertEntityToVoV2(repository.save(entity));
-		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+		addHateoasLinks(vo);
 		return vo;
 	}
 	
@@ -85,7 +83,7 @@ public class PersonServices {
 		entity.setGender(person.getGender());
 		
 		var vo =  DozerMapper.parseObject(repository.save(entity), PersonVO.class);
-		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+		addHateoasLinks(vo);
 		return vo;
 	}
 	
@@ -96,6 +94,19 @@ public class PersonServices {
 		var entity = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		repository.delete(entity);
+	}
+	
+	/**
+	 * Método responsável por adicionar links HATEOAS
+	 * @param id
+	 * @param vo
+	 */
+	private void addHateoasLinks(PersonVO vo) {
+		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel().withType("GET"));
+		vo.add(linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
+		vo.add(linkTo(methodOn(PersonController.class).create(vo)).withRel("create").withType("POST"));
+		vo.add(linkTo(methodOn(PersonController.class).update(vo)).withRel("update").withType("PUT"));
+		vo.add(linkTo(methodOn(PersonController.class).delete(vo.getKey())).withRel("delete").withType("DELETE"));
 	}
 
 }

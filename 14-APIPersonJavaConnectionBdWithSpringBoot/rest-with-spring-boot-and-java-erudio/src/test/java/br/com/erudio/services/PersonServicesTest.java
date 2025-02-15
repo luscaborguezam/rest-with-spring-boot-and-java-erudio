@@ -1,9 +1,15 @@
-package br.com.erudio.unittests.mockito.services;
+package br.com.erudio.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +24,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.erudio.controllers.PersonController;
 import br.com.erudio.data.vo.v1.PersonVO;
 import br.com.erudio.exceptions.RequiredObjectIsNullException;
-import br.com.erudio.mapper.DozerMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.repositories.PersonRepository;
-import br.com.erudio.services.PersonServices;
 import br.com.erudio.unittests.mapper.mocks.MockPerson;
 
 /**
@@ -71,21 +74,52 @@ class PersonServicesTest {
 		 * faremos essa simulação:
 		 * 1 - criar objeto com dados já persistidos.
 		 */
+		//Mocks
 		Person entity = input.mockEntity(1); 
 		//input.mockEntity() Retorna new Person mas não define o id por isso é necessário mockar um.
 		entity.setId(1L);
-		
 		/*Quando o service do teste chamar o repository.findById recebendo o parâmetro,
 		 * então vai ser retornado o Optional de person = input.mockEntity(1)*/
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
 		
 		var result = service.findById(1L);
+		
 		/*Verificações*/
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
-		//System.out.println(result.toString()); -> use para achar o padrão para a comparação abaixo
-		assertTrue(result.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("self")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("findAll")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("create")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("POST")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("update")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("PUT")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("delete")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("DELETE")
+					));
+		
+//System.out.println(result.toString()); -> use para achar o padrão para a comparação abaixo
+		//assertTrue(result.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
 		//As strings esperada é definida em -> MockPerson.mockEntity()
 		assertEquals("Addres Test1", result.getAddress());
 		assertEquals("First Name Test1", result.getFirstName());
@@ -105,18 +139,48 @@ class PersonServicesTest {
 		List<Person> list = input.mockEntityList(); 
 		
 		when(repository.findAll()).thenReturn(list);
+		List<PersonVO> peaple = service.findAll();
 		
-		var peaple = service.findAll();
+		/*Verificações*/
 		assertNotNull(peaple);
 		assertEquals(14, peaple.size());
 		
 	
-		var peapleOne = peaple.get(1);
+		PersonVO peapleOne = peaple.get(1);
 		/*Verificações*/
 		assertNotNull(peapleOne);
 		assertNotNull(peapleOne.getKey());
 		assertNotNull(peapleOne.getLinks());
-		assertTrue(peapleOne.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
+		
+		assertNotNull(peapleOne.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("self")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(peapleOne.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("findAll")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(peapleOne.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("create")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("POST")
+					));
+		
+		assertNotNull(peapleOne.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("update")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("PUT")
+					));
+		
+		assertNotNull(peapleOne.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("delete")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("DELETE")
+					));
 		//As strings esperada é definida em -> MockPerson.mockEntity()
 		assertEquals("Addres Test1", peapleOne.getAddress());
 		assertEquals("First Name Test1", peapleOne.getFirstName());
@@ -128,7 +192,35 @@ class PersonServicesTest {
 		assertNotNull(peapleFour);
 		assertNotNull(peapleFour.getKey());
 		assertNotNull(peapleFour.getLinks());
-		assertTrue(peapleFour.toString().contains("links: [</person/v1/4>;rel=\"self\"]"));
+		assertNotNull(peapleFour.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("self")
+						&& link.getHref().endsWith("api/person/v1/4")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(peapleFour.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("findAll")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(peapleFour.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("create")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("POST")
+					));
+		
+		assertNotNull(peapleFour.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("update")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("PUT")
+					));
+		
+		assertNotNull(peapleFour.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("delete")
+						&& link.getHref().endsWith("api/person/v1/4")
+						&& link.getType().equals("DELETE")
+					));
 		//As strings esperada é definida em -> MockPerson.mockEntity()
 		assertEquals("Addres Test4", peapleFour.getAddress());
 		assertEquals("First Name Test4", peapleFour.getFirstName());
@@ -140,7 +232,35 @@ class PersonServicesTest {
 		assertNotNull(peapleSeven);
 		assertNotNull(peapleSeven.getKey());
 		assertNotNull(peapleSeven.getLinks());
-		assertTrue(peapleSeven.toString().contains("links: [</person/v1/7>;rel=\"self\"]"));
+		assertNotNull(peapleSeven.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("self")
+						&& link.getHref().endsWith("api/person/v1/7")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(peapleSeven.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("findAll")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(peapleSeven.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("create")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("POST")
+					));
+		
+		assertNotNull(peapleSeven.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("update")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("PUT")
+					));
+		
+		assertNotNull(peapleSeven.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("delete")
+						&& link.getHref().endsWith("api/person/v1/7")
+						&& link.getType().equals("DELETE")
+					));
 		//As strings esperada é definida em -> MockPerson.mockEntity()
 		assertEquals("Addres Test7", peapleSeven.getAddress());
 		assertEquals("First Name Test7", peapleSeven.getFirstName());
@@ -174,8 +294,38 @@ class PersonServicesTest {
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
-		assertTrue(result.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
+		//assertTrue(result.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
 		//As strings esperada é definida em -> MockPerson.mockEntity()
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("self")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("findAll")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("create")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("POST")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("update")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("PUT")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("delete")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("DELETE")
+					));
+		
 		assertEquals("Addres Test1", result.getAddress());
 		assertEquals("First Name Test1", result.getFirstName());
 		assertEquals("Last Name Test1", result.getLastName());
@@ -190,7 +340,8 @@ class PersonServicesTest {
 	 */
 	@Test
 	void createWithNullPerson() {
-		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
+		Exception exception = assertThrows(RequiredObjectIsNullException.class,
+		() -> {
 			service.create(null);
 		});
 		
@@ -227,7 +378,37 @@ class PersonServicesTest {
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
-		assertTrue(result.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("self")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("findAll")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("GET")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("create")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("POST")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("update")
+						&& link.getHref().endsWith("api/person/v1")
+						&& link.getType().equals("PUT")
+					));
+		
+		assertNotNull(result.getLinks().stream()
+				.anyMatch(link -> link.getRel().value().equals("delete")
+						&& link.getHref().endsWith("api/person/v1/1")
+						&& link.getType().equals("DELETE")
+					));
+		
+		//assertTrue(result.toString().contains("links: [</person/v1/1>;rel=\"self\"]"));
 		//As strings esperada é definida em -> MockPerson.mockEntity()
 		assertEquals("Addres Test1", result.getAddress());
 		assertEquals("First Name Test1", result.getFirstName());
@@ -262,6 +443,8 @@ class PersonServicesTest {
 	 * 1 - criar objeto com dados já persistidos
 	 * 2 - mock de findById, pois o método faz a busca.
 	 * 3 - deleção
+	 * 4 - Verificar que o findById() e do delete() foi chamado e que foi chamado somente uma vez
+	 * 5 - não teve mais interações no repositório.
 	 */
 	@Test
 	void testDelete() {
@@ -273,6 +456,12 @@ class PersonServicesTest {
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
 		
 		service.delete(1L);
+		//Garantir que o findById() e do delete() foi chamado e que foi chamado somente uma vez
+		verify(repository, times(1)).findById(anyLong());
+		verify(repository, times(1)).delete(any());
+		verifyNoMoreInteractions(repository);
+		
+		
 	}
 
 }
