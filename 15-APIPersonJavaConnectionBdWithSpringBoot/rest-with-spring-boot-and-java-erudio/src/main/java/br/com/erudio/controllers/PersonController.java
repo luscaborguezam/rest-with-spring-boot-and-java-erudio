@@ -13,28 +13,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.erudio.controllers.docs.PersonControllerDocs;
 import br.com.erudio.data.vo.v1.PersonVO;
 import br.com.erudio.services.PersonServices;
 import br.com.erudio.util.MediaType;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/person/v1")
-public class PersonController {
+@RequestMapping("api/person/v1")
+@Tag(name = "People", description = "Endpoints For Managing People")
+public class PersonController implements PersonControllerDocs {
 	
 	@Autowired
 	private PersonServices service;
 	
+	
+	
+	@Override
 	@GetMapping(produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML})
 	public List<PersonVO> findAll() {
 		return service.findAll();
 	}
 	
+	@Override
 	@GetMapping(value = "/{id}",
 			produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML})
 	public PersonVO findById(@PathVariable(value = "id") Long id) {
 		return service.findById(id);
 	}
 	
+	
+	@Override
 	@PostMapping(
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML },
             produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
@@ -42,6 +51,7 @@ public class PersonController {
 	   return service.create(person);
 	}
 	
+	@Override
 	@PutMapping(
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML },
 	        produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
@@ -51,6 +61,7 @@ public class PersonController {
 
 	
 	
+	@Override
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 		service.delete(id);
