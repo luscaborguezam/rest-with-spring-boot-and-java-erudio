@@ -151,7 +151,6 @@ class PersonServicesTest {
 		assertNotNull(peapleOne);
 		assertNotNull(peapleOne.getKey());
 		assertNotNull(peapleOne.getLinks());
-		
 		assertNotNull(peapleOne.getLinks().stream()
 				.anyMatch(link -> link.getRel().value().equals("self")
 						&& link.getHref().endsWith("api/person/v1/1")
@@ -163,19 +162,16 @@ class PersonServicesTest {
 						&& link.getHref().endsWith("api/person/v1")
 						&& link.getType().equals("GET")
 					));
-		
 		assertNotNull(peapleOne.getLinks().stream()
 				.anyMatch(link -> link.getRel().value().equals("create")
 						&& link.getHref().endsWith("api/person/v1")
 						&& link.getType().equals("POST")
 					));
-		
 		assertNotNull(peapleOne.getLinks().stream()
 				.anyMatch(link -> link.getRel().value().equals("update")
 						&& link.getHref().endsWith("api/person/v1")
 						&& link.getType().equals("PUT")
 					));
-		
 		assertNotNull(peapleOne.getLinks().stream()
 				.anyMatch(link -> link.getRel().value().equals("delete")
 						&& link.getHref().endsWith("api/person/v1/1")
