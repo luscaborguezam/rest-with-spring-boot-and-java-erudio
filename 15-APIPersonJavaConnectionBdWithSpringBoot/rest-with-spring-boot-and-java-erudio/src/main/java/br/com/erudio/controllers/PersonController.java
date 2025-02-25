@@ -17,11 +17,9 @@ import br.com.erudio.controllers.docs.PersonControllerDocs;
 import br.com.erudio.data.vo.v1.PersonVO;
 import br.com.erudio.services.PersonServices;
 import br.com.erudio.util.MediaType;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("api/person/v1")
-@Tag(name = "People", description = "Endpoints For Managing People")
 public class PersonController implements PersonControllerDocs {
 	
 	@Autowired
