@@ -17,6 +17,7 @@ import br.com.erudio.mapper.DozerMapper;
 import br.com.erudio.model.Book;
 import br.com.erudio.repositories.BookRepository;
 
+
 @Service
 public class BookServices {
 
@@ -30,7 +31,7 @@ public class BookServices {
 	 * @return
 	 */
 	public List<BookDTO> findAll(){
-		logger.info("Find all books!");
+		logger.info("Find all Books!");
 		var books = DozerMapper.parseListObjects(repository.findAll(), BookDTO.class);
 		books.forEach(this::addHateoasLinks);
 		return books;
@@ -43,7 +44,7 @@ public class BookServices {
 	 * @return
 	 */
 	public BookDTO findById(Long id) {
-		logger.info("find book by id!");
+		logger.info("find Book by id!");
 		var book = DozerMapper.parseObject(repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No record found for this id")), 
 				BookDTO.class);
@@ -73,7 +74,7 @@ public class BookServices {
 	 * @return
 	 */
 	public BookDTO update(BookDTO book) {
-		logger.info("Update book registred!");
+		logger.info("Update Book registred!");
 		
 		if(book == null) throw new RequiredObjectIsNullException();
 		
@@ -96,7 +97,7 @@ public class BookServices {
 	 * @param id
 	 */
 	public void delete(Long id) {
-		logger.info("Deleting one book!");
+		logger.info("Deleting one Book!");
 		
 		var entity = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records foundthis id"));

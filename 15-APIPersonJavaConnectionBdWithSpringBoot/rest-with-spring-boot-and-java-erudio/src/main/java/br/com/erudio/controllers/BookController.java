@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.erudio.controllers.docs.BooksControllerDocs;
 import br.com.erudio.dto.BookDTO;
 import br.com.erudio.services.BookServices;
 import br.com.erudio.util.MediaType;
 
 @RestController
 @RequestMapping("api/book/v1")
-public class BookController {
+public class BookController implements BooksControllerDocs{
 	
 	@Autowired
 	private BookServices service;

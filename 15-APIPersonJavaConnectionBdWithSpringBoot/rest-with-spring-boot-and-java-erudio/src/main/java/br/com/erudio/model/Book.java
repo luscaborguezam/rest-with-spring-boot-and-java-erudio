@@ -2,6 +2,7 @@ package br.com.erudio.model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name="books")
@@ -19,13 +22,14 @@ public class Book implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name="author")
+	@Column(name="author", length = 180)
 	private String author;
-	@Column(name="launch_date", nullable = false)
+	@Column(name="launch_date" , nullable = false)
+	@Temporal(TemporalType.DATE)
 	private Date launchDate;
 	@Column(name="price", nullable = false)
 	private Double price;
-	@Column(name="title")
+	@Column(name="title",length = 250)
 	private String title;
 	 
 	public Book() {}
@@ -68,6 +72,25 @@ public class Book implements Serializable{
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(author, id, launchDate, price, title);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Book other = (Book) obj;
+		return Objects.equals(author, other.author) && Objects.equals(id, other.id)
+				&& Objects.equals(launchDate, other.launchDate) && Objects.equals(price, other.price)
+				&& Objects.equals(title, other.title);
 	}
 
 	
