@@ -1,5 +1,6 @@
 package br.com.erudio.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,9 @@ public class WebConfig implements WebMvcConfigurer{
 	public void addCorsMappings(CorsRegistry registry) {
 		/*Lista de origens permitidas*/
 		var allowedOrigins = corsOriginPatterns.split(",");
+
+		System.out.println("CORS allowedOrigins: " + Arrays.toString(allowedOrigins));
+
 		
 		//Regras de mapeamento para cors
 		registry.addMapping("/**")//todas requisições vão ser filtradas por cors

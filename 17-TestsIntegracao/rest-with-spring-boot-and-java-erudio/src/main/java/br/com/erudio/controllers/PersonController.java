@@ -27,7 +27,6 @@ public class PersonController implements PersonControllerDocs {
 	private PersonServices service;
 	
 	
-//	@CrossOrigin(origins = {"https://localhost", "https://lucas.teste.com"})
 	@Override
 	@GetMapping(produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML})
 	public List<PersonVO> findAll() {
