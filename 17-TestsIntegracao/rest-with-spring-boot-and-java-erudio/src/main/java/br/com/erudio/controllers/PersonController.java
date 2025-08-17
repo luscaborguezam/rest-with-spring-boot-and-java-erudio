@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,7 @@ public class PersonController implements PersonControllerDocs {
 	private PersonServices service;
 	
 	
-	
+//	@CrossOrigin(origins = {"https://localhost", "https://lucas.teste.com"})
 	@Override
 	@GetMapping(produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML})
 	public List<PersonVO> findAll() {
