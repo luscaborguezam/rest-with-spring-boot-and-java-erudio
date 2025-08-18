@@ -8,6 +8,6 @@ public interface TestConfigs {
     
     String ORIGIN_ACCEPT = "https://lucas.teste.com";
     String ORIGIN_NOT_ACCEPT = "https://outros.teste.com";
-//    String ORIGIN_LOCAL = "http://localhost:8080";-----------------String ORIGIN_LOCAL = "http://localhost:8080";-----------------
+    String ORIGIN_LOCAL = "http://localhost:8080";//-----------------String ORIGIN_LOCAL = "http://localhost:8080";-----------------
     
 }
